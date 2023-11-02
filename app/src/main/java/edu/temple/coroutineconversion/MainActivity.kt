@@ -6,6 +6,11 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,12 +30,14 @@ class MainActivity : AppCompatActivity() {
         cakeImageView = findViewById(R.id.imageView)
 
         findViewById<Button>(R.id.revealButton).setOnClickListener{
-            Thread{
-                repeat(100) {
-                    handler.sendEmptyMessage(it)
-                    Thread.sleep(40)
-                }
-            }.start()
+           CoroutineScope(Dispatchers.Default).launch {
+               repeat(100){
+                   withContext(Dispatchers.Main){
+                   cakeImageView.alpha= it/ 100f
+                   delay(40)
+                   }
+               }
+           }
         }
     }
 }
